@@ -3,8 +3,8 @@ from twilio.rest import Client
 import time
 import sys
 
-GPIO_TRIGGER = 18 
-GPIO_ECHO = 24
+GPIO_TRIGGER = 15
+GPIO_ECHO = 14
 
 
 account_sid ="AC7c1252b4cf3901bf025cc9fd437502a3" 
