@@ -1,37 +1,35 @@
 import RPi.GPIO as GPIO
 import time
+GPIO.setmode(GPIO.BCM)
 
-try:
-      GPIO.setmode(GPIO.BOARD)
+TRIG = 23 
+ECHO = 24
 
-      PIN_TRIGGER = 7
-      PIN_ECHO = 11
+print "Distance Measurement In Progress"
 
-      GPIO.setup(PIN_TRIGGER, GPIO.OUT)
-      GPIO.setup(PIN_ECHO, GPIO.IN)
+GPIO.setup(TRIG,GPIO.OUT)
+GPIO.setup(ECHO,GPIO.IN)
 
-      GPIO.output(PIN_TRIGGER, GPIO.LOW)
+GPIO.output(TRIG, False)
+print "Waiting For Sensor To Settle"
+time.sleep(2)
 
-      print ("Waiting for sensor to settle")
+GPIO.output(TRIG, True)
+time.sleep(0.00001)
+GPIO.output(TRIG, False)
 
-      time.sleep(2)
+while GPIO.input(ECHO)==0:
+  pulse_start = time.time()
 
-      print ("Calculating distance")
+while GPIO.input(ECHO)==1:
+  pulse_end = time.time()
 
-      GPIO.output(PIN_TRIGGER, GPIO.HIGH)
+pulse_duration = pulse_end - pulse_start
 
-      time.sleep(0.00001)
+distance = pulse_duration * 17150
 
-      GPIO.output(PIN_TRIGGER, GPIO.LOW)
+distance = round(distance, 2)
 
-      while GPIO.input(PIN_ECHO)==0:
-            pulse_start_time = time.time()
-      while GPIO.input(PIN_ECHO)==1:
-            pulse_end_time = time.time()
+print "Distance:",distance,"cm"
 
-      pulse_duration = pulse_end_time - pulse_start_time
-      distance = round(pulse_duration * 17150, 2)
-      print ("Distance:",distance,"cm")
-
-finally:
-      GPIO.cleanup()
+GPIO.cleanup()
